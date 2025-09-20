@@ -53,7 +53,7 @@ app.post('/api/users',
     try {
         
         //Check if user already exists
-        let user = await User.findONe({email: email.toLowerCase()});
+        let user = await User.findOne({email: email.toLowerCase()});
         if (user){
 
             return res.status(400).json({
