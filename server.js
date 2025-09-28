@@ -7,10 +7,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import auth from './middleware/auth.js';
+//import mongoose from 'mongoose';
 
 //Load environment variables
 dotenv.config();
-
 
 //init express app
 const app = express();
@@ -89,7 +89,7 @@ app.post('/api/users',
             }
         };
 
-        //Generate JWT toke 
+        //Generate JWT token
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
@@ -186,14 +186,18 @@ app.post('/api/auth', [
 });
 
 /**
+ * 
+ */
+
+/**
  * @route GET api/posts
  * @desc Get all posts
  */
-app.get("/api/posts", async (req, res) => {
+app.get('/api/posts', async (req, res) => {
 
     try{
         const posts = await Post.find()
-        .populate("user", "name")
+        .populate('user', 'name')
         .sort({createDate: -1});
 
         res.json(posts);
@@ -201,7 +205,7 @@ app.get("/api/posts", async (req, res) => {
     catch (error){
 
         console.error(error.message);
-        res.status(500).send("Server error");
+        res.status(500).send('Server error');
     }
 });
 
@@ -209,15 +213,15 @@ app.get("/api/posts", async (req, res) => {
  * @route Get api/posts/:id
  * @desc Get single post
  */
-app.get("/api/posts/:id", async (req, res) => {
+app.get('/api/posts/:id', async (req, res) => {
 
     try{
 
-        const post = await Post.findById(req.params.id).populate("user", "name");
+        const post = await Post.findById(req.params.id).populate('user', 'name');
 
         if (!post){
 
-            return res.status(404).json({msg: "Post not found"});
+            return res.status(404).json({msg: 'Post not found'});
         }
 
         res.json(post);
@@ -226,11 +230,11 @@ app.get("/api/posts/:id", async (req, res) => {
 
         console.error(error.message);
 
-        if (error.kind === "ObjectID"){
+        if (error.kind === 'ObjectID'){
 
-            return res.status(404).json({msg: "Post not found"});
+            return res.status(404).json({msg: 'Post not found'});
         }
-        res.status(500).send("Server error");
+        res.status(500).send('Server error');
     }
 });
 
@@ -240,11 +244,11 @@ app.get("/api/posts/:id", async (req, res) => {
  */
 app.post(
 
-    "/api/posts",
+    '/api/posts',
     [
         auth,
-        check("title", "Title is required").not().isEmpty(),
-        check("body", "Body is required").not().isEmpty(),
+        check('title', 'Title is required').not().isEmpty(),
+        check('body', 'Body is required').not().isEmpty(),
     ],
     async (req, res) => {
 
@@ -269,14 +273,14 @@ app.post(
             const post = await newPost.save();
 
             //Populate user data before returning
-            await post.populate("user", "name");
+            await post.populate('user', 'name');
 
             res.json(post);
         }
         catch (error){
 
             console.error(error.message);
-            res.status(500).send("Server error");
+            res.status(500).send('Server error');
         }
     }
 );
@@ -286,11 +290,11 @@ app.post(
  * @desc Update a post
  */
 app.put(
-    "/api/posts/:id",
+    '/api/posts/:id',
     [
         auth,
-        check("title", "Title is required").not().isEmpty(),
-        check("body", "Body is required").not().isEmpty(),
+        check('title', 'Title is required').not().isEmpty(),
+        check('body', 'Body is required').not().isEmpty(),
     ],
     async (req, res) => {
         
@@ -309,20 +313,20 @@ app.put(
 
             if (!post){
 
-                return res.status(404).json({msg: "Post not found"});
+                return res.status(404).json({msg: 'Post not found'});
             }
 
             //Check if user owns the post
             if (post.user.toString() !== req.user.id){
 
-                return res.status(401).json({msg: "User not authorized"});
+                return res.status(401).json({msg: 'User not authorized'});
             }
 
             post.title = title;
             post.body = body;
 
             await post.save();
-            await post.populate("user", "name");
+            await post.populate('user', 'name');
 
             res.json(post);
         }
@@ -330,12 +334,12 @@ app.put(
 
             console.error(error.message);
             
-            if (error.kind === "ObjectId"){
+            if (error.kind === 'ObjectId'){
 
-                return res.status(404).json({msg: "Post not found"});
+                return res.status(404).json({msg: 'Post not found'});
             }
 
-            res.status(500).send("Server error");
+            res.status(500).send('Server error');
         }
     }
 );
@@ -344,7 +348,7 @@ app.put(
  * @route DELETE api/posts/:id
  * @desc Delete a post
  */
-app.delete("/api/posts/:id", auth, async (req, res) => {
+app.delete('/api/posts/:id', auth, async (req, res) => {
 
     try{
 
@@ -352,31 +356,35 @@ app.delete("/api/posts/:id", auth, async (req, res) => {
 
         if (!post){
 
-            return res.status(404).json({msg: "Post not found"});
+            return res.status(404).json({msg: 'Post not found'});
         }
 
         //Check if user owns the post
         if (post.user.toString() !== req.user.id){
 
-            return res.status(401).json({msg: "User not authorized"});
+            return res.status(401).json({msg: 'User not authorized'});
         }
 
         await Post.findByIdAndDelete(req.params.id);
 
-        res.json({msg: "Post removed"});
+        res.json({msg: 'Post removed'});
     }
     catch (error){
 
         console.error(error.message);
 
-        if (error.kind === "ObjectID"){
+        if (error.kind === 'ObjectID'){
 
-            return res.status(404).json({msg: "Post not found"});
+            return res.status(404).json({msg: 'Post not found'});
         }
 
-        res.status(500).send("Server error");
+        res.status(500).send('Server error');
     }
 });
+
+
+
+
 
 //Connection listener
 app.listen(3000, () => console.log('Express server running on port 3000'));
