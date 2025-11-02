@@ -8,7 +8,6 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import auth from './middleware/auth.js';
 import cors from  'cors';
-//import mongoose from 'mongoose';
 
 //Load environment variables
 dotenv.config();
@@ -190,10 +189,6 @@ app.post('/api/auth', [
 });
 
 /**
- * 
- */
-
-/**
  * @route GET api/posts
  * @desc Get all posts
  */
@@ -201,7 +196,7 @@ app.get('/api/posts', async (req, res) => {
 
     try{
         const posts = await Post.find()
-        .populate('user', 'name')
+        .populate('User', 'name')
         .sort({createDate: -1});
 
         res.json(posts);
@@ -277,7 +272,7 @@ app.post(
             const post = await newPost.save();
 
             //Populate user data before returning
-            await post.populate('user', 'name');
+            await post.populate('User', 'name');
 
             res.json(post);
         }
@@ -330,7 +325,7 @@ app.put(
             post.body = body;
 
             await post.save();
-            await post.populate('user', 'name');
+            await post.populate('User', 'name');
 
             res.json(post);
         }
