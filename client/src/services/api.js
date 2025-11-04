@@ -18,7 +18,7 @@ export const getPosts = async () => {
 };
 
 //Get single post by ID
-export const getPostByID = async (id) => {
+export const getPostById = async (id) => {
 
     try{
 
