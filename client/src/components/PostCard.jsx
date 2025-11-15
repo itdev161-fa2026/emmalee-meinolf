@@ -18,10 +18,10 @@ const PostCard = ({ post }) => {
                 <span className='post-author'>By {post.user?.name || 'Unknown'}</span>
                 <span className='post-date'>{formatDate(post.createDate)}</span>
             </div>
-            {<p className='post-preview'>
-          {/*       {post.body.substring(0, 150)}
-                {post.body.length > 150 ? '...' : ''} */}
-            </p> }
+            <p className='post-preview'>
+                {post.body.substring(0, 150)}
+                {post.body.length > 150 ? '...' : ''}
+            </p>
             <span className='read-more'>Read More →</span>
             </Link>
         </div>
