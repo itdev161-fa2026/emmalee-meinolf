@@ -88,7 +88,8 @@ app.post('/api/users',
             
             user: {
 
-                id: user.id
+                id: user.id,
+                name: user.name
             }
         };
 
@@ -161,7 +162,8 @@ app.post('/api/auth', [
         const payload = {
 
             user: {
-                id: user.id
+                id: user.id,
+                name: user.name
             }
         };
 
